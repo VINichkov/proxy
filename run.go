@@ -52,6 +52,7 @@ func changeQuery(query url.Values) string {
 	query.Set("utm_source", "jobsgaloreeu")
 	query.Set("utm_campaign", "jobsgaloreeu")
 	query.Set("utm_medium", "organic")
+	query.Set("source", "jobsgaloreeu")
 	return query.Encode()
 }
 
