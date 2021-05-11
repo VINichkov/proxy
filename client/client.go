@@ -1,7 +1,6 @@
 package client
 
 import (
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -41,7 +40,6 @@ func (client *HttpClient) newRequest(url string) (*http.Request, error)   {
 
 func (client *HttpClient) selectAgent()  {
 	if client.agent == "" {
-		log.Println("Зашли")
 		agents := UserSlice{[]string{
 			"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:64.0) Gecko/20100101 Firefox/64.0",
 			"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.1.25 (KHTML, like Gecko) Version/8.0 Safari/600.1.25",

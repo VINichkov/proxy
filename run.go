@@ -48,11 +48,12 @@ func _check_err(err error) int {
 }
 
 func changeQuery(query url.Values) string {
-	query.Set("tracking", "jobsgalore")
+	//Временно уберем
+	/*query.Set("tracking", "jobsgalore")
 	query.Set("utm_source", "jobsgaloreeu")
 	query.Set("utm_campaign", "jobsgaloreeu")
 	query.Set("utm_medium", "organic")
-	query.Set("source", "jobsgaloreeu")
+	query.Set("source", "jobsgaloreeu")*/
 	return query.Encode()
 }
 
