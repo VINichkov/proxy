@@ -10,27 +10,26 @@ import (
 	"proxy/client"
 )
 
-type user_arr struct {
+type userArr struct {
 	elem map[string]bool
 }
 
-func (u *user_arr) new()  {
+func (u *userArr) new()  {
 	if len(u.elem) == 0 {
-		origin_arr := []string{
+		originArr := []string{
 			"class",
 			"href",
 			"id",
 		}
 		u.elem = make(map[string]bool)
-		for _, t :=range origin_arr{
+		for _, t :=range originArr{
 			u.elem[t] = true
 		}
 	}
 }
 
-var u user_arr
 
-func (u *user_arr) includes(t string) bool{
+func (u *userArr) includes(t string) bool{
 	return u.elem[t]
 }
 
@@ -40,7 +39,7 @@ func _check(err error) {
 	}
 }
 
-func _check_err(err error) int {
+func _checkErr(err error) int {
 	if err != nil {
 		return 500
 	}
@@ -57,10 +56,10 @@ func changeQuery(query url.Values) string {
 	return query.Encode()
 }
 
-func updateUrl(url_path string) string{
-	log.Println( "Старый урл " + url_path)
-	result := url_path
-	u, err := url.Parse(url_path)
+func updateUrl(urlPath string) string{
+	log.Println( "Старый урл " + urlPath)
+	result := urlPath
+	u, err := url.Parse(urlPath)
 	_check(err)
 
 	if u != nil {
@@ -86,15 +85,15 @@ func main() {
 	})
 
 	m.GET("/open", func(c *gin.Context) {
-		url := c.Query("url")
+		gottenUrl := c.Query("url")
 		result :=""
-		if url !="" {
-			response, err := httpClient.Get(url)
-			log.Println(fmt.Sprintf("url: \"%s  | agent: \"%s", url, httpClient.Agent()))
+		if gottenUrl !="" {
+			response, err := httpClient.Get(gottenUrl)
+			log.Println(fmt.Sprintf("url: \"%s  | agent: \"%s", gottenUrl, httpClient.Agent()))
 			doc, err := goquery.NewDocumentFromResponse(response)
 			_check(err)
 
-			u := user_arr{}
+			u := userArr{}
 			u.new()
 
 			body := doc.Find("div.search-results-container, div.job_info, td#resultsCol, " +
@@ -121,17 +120,17 @@ func main() {
 
 	m.GET("/redirect", func(c *gin.Context) {
 
-		origin_url := c.Query("url")
+		originUrl := c.Query("url")
 		//aplitrak  := "www.aplitrak.com"
 		status :=200
 		res := ""
-		if origin_url !="" {
+		if originUrl !="" {
 
 			//Получаем страницу по url
-			response, err := httpClient.Get(origin_url)
-			log.Println(fmt.Sprintf("url: \"%s  | agent: \"%s", origin_url, httpClient.Agent()))
+			response, err := httpClient.Get(originUrl)
+			log.Println(fmt.Sprintf("url: \"%s  | agent: \"%s", originUrl, httpClient.Agent()))
 
-			status =_check_err(err)
+			status =_checkErr(err)
 
 			//Если получили страницу, то продолжаем иначе у оригинального URL меняем метки и выходим
 			if status==200 {
@@ -140,7 +139,7 @@ func main() {
 				if aplitrak == response.Request.URL.Host {
 					log.Println("Aplitrak url: " + response.Request.URL.String())
 					_, err := goquery.NewDocumentFromResponse(response)
-					flag := _check_err(err)
+					flag := _checkErr(err)
 					if flag == 200 {
 						new_url = response.Request.URL.String()
 						/*body := doc.Find("div.search-results-container, div.job_info, td#resultsCol, " +
@@ -165,14 +164,14 @@ func main() {
 					log.Println(fmt.Sprintf("url: \"%s  | agent: \"%s", new_url, httpClient.Agent()))
 					log.Println("Ссылка не аботает : " + new_url)
 					log.Println(respChecking.StatusCode)
-					res = origin_url
+					res = originUrl
 				}
 				res = new_url
 				*/
 
 				res = response.Request.URL.String()
 			} else {
-				res = origin_url
+				res = originUrl
 			}
 
 			res = updateUrl(res)
